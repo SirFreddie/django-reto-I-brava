@@ -12,7 +12,8 @@ def send_mass_email():
     template = get_template('polls/correo.html')
     content = template.render()
 
-    no_phone_users = User.objects.filter(phone_number='') # Devuelve una tabla con todos los usuarios si telefono
+    no_phone_users = User.objects.filter(phone_number='') # Devuelve una tabla con todos los usuarios sin telefono
+
     for user in no_phone_users:
         send_to.append(user.email)
 
