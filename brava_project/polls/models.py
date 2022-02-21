@@ -5,8 +5,10 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.contrib import admin
 
+from .logicaldelete import LogicalDeletedModel
 
-class Question(models.Model):
+
+class Question(LogicalDeletedModel):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 
@@ -23,7 +25,7 @@ class Question(models.Model):
         return self.question_text
 
 
-class Choice(models.Model):
+class Choice(LogicalDeletedModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
@@ -32,7 +34,7 @@ class Choice(models.Model):
         return self.choice_text
 
 
-class Empresa(models.Model):
+class Empresa(LogicalDeletedModel):
     name = models.CharField(max_length=50)
     adress = models.CharField(max_length=100)
     
@@ -40,7 +42,7 @@ class Empresa(models.Model):
         return self.name
 
 
-class User(AbstractUser):
+class User(AbstractUser, LogicalDeletedModel):
     empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT, null=True)
     phone_number = models.CharField(max_length=50, blank=True)
 

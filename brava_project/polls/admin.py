@@ -1,12 +1,13 @@
 from django.contrib import admin
 
 from .models import Empresa, Question, User, Choice
+from .logicaldelete import LogicalDeletedModelAdmin, LogicaLDeletedModelTabularInLine
 
-class ChoiceInline(admin.TabularInline):
+class ChoiceInline(LogicaLDeletedModelTabularInLine):
     model = Choice
     extra = 3
 
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(LogicalDeletedModelAdmin):
     fieldsets = [
         (None,               {'fields': ['question_text']}),
         ('Date information', {'fields': ['pub_date']}),
