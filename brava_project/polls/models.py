@@ -5,8 +5,6 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.contrib import admin
 
-from ninja import Schema
-
 from .logicaldelete import LogicalDeletedModel
 
 

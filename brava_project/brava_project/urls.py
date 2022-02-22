@@ -15,23 +15,50 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.core import serializers
+from typing import List
 
-from polls.models import Question, User
+from polls.models import Question, User, Choice
 
 from ninja import NinjaAPI
+from ninja import ModelSchema
+
+
+class UserSchema(ModelSchema):
+    class Config:
+        model = User
+        model_fields = "__all__"
+
+class QuestionSchema(ModelSchema):
+    class Config:
+        model = Question
+        model_fields = "__all__"
+
+class ChoiceSchema(ModelSchema):
+    class Config:
+        model = Choice
+        model_fields = "__all__"
 
 api = NinjaAPI()
 
-@api.get("/user/{int:user_id}")
+@api.get("/user/{int:user_id}", response=UserSchema)
 def get_user(request, user_id: int):
-    data = serializers.serialize('json', User.objects.filter(pk=user_id) )
+    data = User.objects.filter(pk=user_id).first()
     return data
 
-@api.get("/users")
+@api.get("/users", response=List[UserSchema])
 def get_users(request):
-    data = serializers.serialize('json', User.objects.all())
-    return data
+    data = User.objects.all()
+    return list(data)
+
+@api.get("/questions", response=List[QuestionSchema])
+def get_questions(request):
+    data = Question.objects.all()
+    return list(data)
+
+@api.get("/choices", response=List[ChoiceSchema])
+def get_choices(request):
+    data = Choice.objects.all()
+    return list(data)
 
 @api.get("/emails")
 def get_emails(request):
