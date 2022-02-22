@@ -15,14 +15,32 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.core import serializers
+
+from polls.models import Question, User
 
 from ninja import NinjaAPI
 
 api = NinjaAPI()
 
-@api.get("/add")
-def add(request, a: int, b: int):
-    return {"result": a + b}
+@api.get("/user/{int:user_id}")
+def get_user(request, user_id: int):
+    data = serializers.serialize('json', User.objects.filter(pk=user_id) )
+    return data
+
+@api.get("/users")
+def get_users(request):
+    data = serializers.serialize('json', User.objects.all())
+    return data
+
+@api.get("/emails")
+def get_emails(request):
+    aux = []
+    all_users = User.objects.all()
+    for user in all_users:
+        if user.email != '':
+            aux.append(user.email)
+    return aux
 
 urlpatterns = [
     path('polls/', include('polls.urls')),
